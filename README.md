@@ -1,1 +1,1 @@
-# intro-to-mongodb
+# Intro to MongoDB
