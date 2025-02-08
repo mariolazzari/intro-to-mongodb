@@ -109,3 +109,91 @@ db.routes.find({ $or: [{ "airline.name": "Aerocondor"}, {src_airport: "KZN" }]})
 db.routes.find({ "airline.name": "Aerocondor", src_airport: "KZN"})
 ```
 
+## CRUD operations replace & delete
+
+```js
+// replace document
+db.collection.replaceOne(
+   { name: "Alice" },  // Filter to find the document
+   { name: "Alice", age: 30, city: "New York" }  // New document replacing the old one
+)
+
+// output
+{
+  "acknowledged" : true,
+  "matchedCount" : 0,
+  "modifiedCount" : 0
+}
+
+// update one
+db.users.updateOne(
+   { "name": "Alice" },  
+   { $set: { "city": "Los Angeles" } }
+)
+
+// create if not exists
+db.users.updateOne(
+   { "name": "Bob" },
+   { $set: { "age": 30, "city": "Chicago" } },
+   { upsert: true }
+)
+
+// result
+{
+  "acknowledged": true,
+  "matchedCount": 1,
+  "modifiedCount": 1,
+  "upsertedId": null
+}
+
+// Push operator
+{
+  "_id": 1,
+  "name": "Alice",
+  "hobbies": ["reading", "traveling"]
+}
+
+db.users.updateOne(
+   { "name": "Alice" },
+   { $push: { "hobbies": "cycling" } }
+)
+
+// find And Modify
+db.collection.findAndModify({
+   query: { <filter> },         // Find the document
+   update: { <update> },        // Modify the document
+   new: true | false,           // Return the updated document (true) or the original (false)
+   sort: { <field>: 1 | -1 },   // Optional: Sort if multiple docs match
+   upsert: true | false         // Optional: Insert if no document is found
+})
+
+db.users.findAndModify({
+   query: { "name": "Alice" },
+   update: { $set: { "age": 27 } },
+   new: false  // Return the original document before update
+})
+
+// update many
+db.users.updateMany(
+   { "age": { $gte: 25 } },  // Update users with age 25 or older
+   { $inc: { "age": 1 } }    // Increase age by 1
+)
+
+// delete one
+db.users.deleteOne({ "age": { $gt: 30 } })
+// results
+{
+  "acknowledged": true,
+  "deletedCount": 1
+}
+
+// delete many 
+db.users.deleteMany({ "age": 25 })
+// results
+{
+  "acknowledged": true,
+  "deletedCount": 2
+}
+
+
+```
