@@ -227,5 +227,61 @@ db.inspections.find({ result: { $in: ["Pass", "Warnung"] }}, { business_name: 1,
 // count documents
 db.trips.countDocuments()
 db.trips.countDocuments({ tripduration: { $gt: 120 }})
+```
+
+## Aggregations
+
+```js
+db.zips.aggregate(
+  [
+    { $match: { state: 'CA' } },
+    {
+      $group: {
+        _id: '$city',
+        totalZips: { $count: {} }
+      }
+    }
+  ],
+  { maxTimeMS: 60000, allowDiskUse: true }
+);
+
+db.zips.aggregate(
+  [{ $sort: { pop: -1 } }, { $limit: 3 }]);
+
+db.zips.aggregate(
+  [
+    {
+      $project: {
+        state: 1,
+        zip: 1,
+        _id: 0,
+        population: '$pop'
+      }
+    },
+    {
+      $set: {
+        pop_2022: {
+          $round: { $multiply: [1.031, '$pop'] }
+        }
+      }
+    },
+    { $count: 'total_zipd' }
+  ]
+);
+
+// out
+db.getCollection('zips').aggregate(
+  [
+    {
+      $group: {
+        _id: '$state',
+        total_pop: { $sum: '$pop' }
+      }
+    },
+    { $match: { total_pop: { $lt: 1000000 } } }
+    { $out: "small:cities" }
+  ]
+  );
+
 
 ```
