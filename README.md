@@ -194,6 +194,38 @@ db.users.deleteMany({ "age": 25 })
   "acknowledged": true,
   "deletedCount": 2
 }
+```
 
+## Modifing results
+
+```js
+use sample_training;
+// sorting and projections
+db.companies
+  .find(
+    { category_code: "music" }, 
+    { name: 1 }
+  )
+  .sort({ name: 1 });
+
+// limiting
+db.companies
+  .find({category_code: "music"}, {name: 1, number_of_employees: 1})
+  .sort({number_of_employees: -1})
+  .limit(3);
+
+// projections
+use sample_training;
+db.inspections.find({ sector: "Fuel Oil Dealer - 814" }, { business_name: 1, result: 1, _id: 0})
+
+// in operator
+db.inspections.find({ result: { $in: ["Pass", "Warnung"] }}, { business_name: 1, result: 1, _id: 0})
+
+// dot notation
+db.inspections.find({ result: { $in: ["Pass", "Warnung"] }}, { business_name: 1, result: 1, "address.city": 1, _id: 0})
+
+// count documents
+db.trips.countDocuments()
+db.trips.countDocuments({ tripduration: { $gt: 120 }})
 
 ```
