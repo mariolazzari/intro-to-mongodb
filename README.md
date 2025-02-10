@@ -321,6 +321,20 @@ db.collection.dropIndexes(["index_name_1", "index_name_2"])
 
 ## Modelling
 
+## Trnsactions
+
 ```js
+const session = db.getMongo().startSession();
+session.startTransation();
+
+const account = session.getDatabase("bank").getCollection("accounts");
+account.updateOne({ account_id: "id1" }, { $inc: {balance: -30 }})
+account.updateOne({ account_id: "id2" }, { $inc: {balance: 30 }})
+session.commitTransaction()
+
+// abort transaction
+session.startTransation();
+account.updateOne({ account_id: "id2" }, { $inc: {balance: 5 }});
+session.abortTransaction();
 
 ```
