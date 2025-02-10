@@ -282,6 +282,39 @@ db.getCollection('zips').aggregate(
     { $out: "small:cities" }
   ]
   );
+```
+
+## Indexes
+
+```js
+// create index
+use sample_analytics;
+db.customers.find({ birthdate: { $lt: ISODate("1975-03-28")}}).sort({ birthdate: 1 })
+db.customers.createIndex({birthdate: 1})
+
+// unique index
+db.customers.createIndex({ email: 1 }, { unique:true })
+
+// show indexes
+db.customers.getIndexes()
+
+// execution plain
+db.customers.explain().find({ birthdate: { $lt: ISODate("1975-03-28")}}).sort({ birthdate: 1 })
+
+// multikey index (array)
+db.customers.createIndex({ email: 1, accounts: 1 })
+
+// compound index
+db.customers.createIndex({ active: 1, birthdate: -1, name: 1 })
+
+// hide index before deleting it
+db.collection.hideIndex("index_name)
+
+// delete index
+db.collection.dropIndex("index_name)
+
+// delete multiple indexes
+db.collection.dropIndexes(["index_name_1", "index_name_2"])
 
 
 ```
