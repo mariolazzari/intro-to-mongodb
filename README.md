@@ -315,6 +315,12 @@ db.collection.dropIndex("index_name)
 
 // delete multiple indexes
 db.collection.dropIndexes(["index_name_1", "index_name_2"])
+```
 
+## Atlas search
+
+## Modelling
+
+```js
 
 ```
